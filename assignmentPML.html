@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">PML Assignment</h1>
 <h4 class="author"><em>Rnryback</em></h4>
-<h4 class="date"><em>16 de enero de 2015</em></h4>
+<h4 class="date"><em>16th January 2015</em></h4>
 </div>
 
 
@@ -64,49 +64,21 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="data-processing" class="section level2">
 <h2>Data Processing</h2>
-<p><strong>Performed steps</strong>:<br />* Get the system ready loading dependencies and the data<br />* Remove excel division error strings <code>#DIV/0!</code> and replace with <code>NA</code> values * Convert empty strings to <code>NA</code> values</p>
-<pre class="r"><code>library(Hmisc)</code></pre>
-<pre><code>## Loading required package: grid
-## Loading required package: lattice
-## Loading required package: survival
-## Loading required package: splines
-## Loading required package: Formula
-## 
-## Attaching package: 'Hmisc'
-## 
-## The following objects are masked from 'package:base':
-## 
-##     format.pval, round.POSIXt, trunc.POSIXt, units</code></pre>
-<pre class="r"><code>library(caret)</code></pre>
-<pre><code>## Loading required package: ggplot2
-## 
-## Attaching package: 'caret'
-## 
-## The following object is masked from 'package:survival':
-## 
-##     cluster</code></pre>
-<pre class="r"><code>library(randomForest)</code></pre>
-<pre><code>## randomForest 4.6-10
-## Type rfNews() to see new features/changes/bug fixes.
-## 
-## Attaching package: 'randomForest'
-## 
-## The following object is masked from 'package:Hmisc':
-## 
-##     combine</code></pre>
-<pre class="r"><code>library(foreach)
-library(doParallel)</code></pre>
-<pre><code>## Loading required package: iterators
-## Loading required package: parallel</code></pre>
-<pre class="r"><code>set.seed(2048)
+<p><strong>Performed steps</strong>:<br />* Get the system ready loading dependencies and the data<br />* Remove excel division error strings <code>#DIV/0!</code> and replace with <code>NA</code> values<br />* Convert empty strings to <code>NA</code> values</p>
+<pre class="r"><code>library(Hmisc)
+library(caret)
+library(randomForest)
+library(foreach)
+library(doParallel)
+set.seed(1980)
 options(warn=-1)
 training_data &lt;- read.csv(&quot;pml-training.csv&quot;, na.strings=c(&quot;#DIV/0!&quot;) )
 evaluation_data &lt;- read.csv(&quot;pml-testing.csv&quot;, na.strings=c(&quot;#DIV/0!&quot;) )</code></pre>
-<p>I also casted all columns 8 to the end to be numeric.</p>
+<p>Set columns from the eighth to the end to be numeric.</p>
 <pre class="r"><code>for(i in c(8:ncol(training_data)-1)) {training_data[,i] = as.numeric(as.character(training_data[,i]))}
 
 for(i in c(8:ncol(evaluation_data)-1)) {evaluation_data[,i] = as.numeric(as.character(evaluation_data[,i]))}</code></pre>
-<p>Some columns were mostly blank. These did not contribute well to the prediction. I chose a feature set that only included complete columns. We also remove user name, timestamps and windows.</p>
+<p>There are some almost-totally blank columns in the data that do not contribute well to the prediction, so the feature dataset is made to only include complete columns. Also removing user name, timestamps and windows.</p>
 <p>Determine and display out feature set.</p>
 <pre class="r"><code>feature_set &lt;- colnames(training_data[colSums(is.na(training_data)) == 0])[-(1:7)]
 model_data &lt;- training_data[feature_set]
@@ -129,11 +101,11 @@ feature_set</code></pre>
 ## [46] &quot;gyros_forearm_z&quot;      &quot;accel_forearm_x&quot;      &quot;accel_forearm_y&quot;     
 ## [49] &quot;accel_forearm_z&quot;      &quot;magnet_forearm_x&quot;     &quot;magnet_forearm_y&quot;    
 ## [52] &quot;magnet_forearm_z&quot;     &quot;classe&quot;</code></pre>
-<p>We now have the model data built from our feature set.</p>
+<p>The model data is now built built from the feature set.</p>
 <pre class="r"><code>idx &lt;- createDataPartition(y=model_data$classe, p=0.75, list=FALSE )
 training &lt;- model_data[idx,]
 testing &lt;- model_data[-idx,]</code></pre>
-<p>We now build 5 random forests with 150 trees each. We make use of parallel processing to build this model. I found several examples of how to perform parallel processing with random forests in R, this provided a great speedup.</p>
+<p>Build 5 random forests with 150 trees each using parallel processing to build this model.</p>
 <pre class="r"><code>registerDoParallel()
 x &lt;- training[-ncol(training)]
 y &lt;- training$classe
@@ -182,37 +154,38 @@ confusionMatrix(predictions2,testing$classe)</code></pre>
 ##           Reference
 ## Prediction    A    B    C    D    E
 ##          A 1395    5    0    0    0
-##          B    0  941    6    0    0
-##          C    0    3  848    9    2
-##          D    0    0    1  795    2
-##          E    0    0    0    0  897
+##          B    0  941    5    0    0
+##          C    0    3  849    8    2
+##          D    0    0    1  796    3
+##          E    0    0    0    0  896
 ## 
 ## Overall Statistics
-##                                           
-##                Accuracy : 0.9943          
-##                  95% CI : (0.9918, 0.9962)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.9928          
-##  Mcnemar's Test P-Value : NA              
+##                                          
+##                Accuracy : 0.9945         
+##                  95% CI : (0.992, 0.9964)
+##     No Information Rate : 0.2845         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.993          
+##  Mcnemar's Test P-Value : NA             
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            1.0000   0.9916   0.9918   0.9888   0.9956
-## Specificity            0.9986   0.9985   0.9965   0.9993   1.0000
-## Pos Pred Value         0.9964   0.9937   0.9838   0.9962   1.0000
-## Neg Pred Value         1.0000   0.9980   0.9983   0.9978   0.9990
+## Sensitivity            1.0000   0.9916   0.9930   0.9900   0.9945
+## Specificity            0.9986   0.9987   0.9968   0.9990   1.0000
+## Pos Pred Value         0.9964   0.9947   0.9849   0.9950   1.0000
+## Neg Pred Value         1.0000   0.9980   0.9985   0.9981   0.9988
 ## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2845   0.1919   0.1729   0.1621   0.1829
-## Detection Prevalence   0.2855   0.1931   0.1758   0.1627   0.1829
-## Balanced Accuracy      0.9993   0.9950   0.9942   0.9940   0.9978</code></pre>
+## Detection Rate         0.2845   0.1919   0.1731   0.1623   0.1827
+## Detection Prevalence   0.2855   0.1929   0.1758   0.1631   0.1827
+## Balanced Accuracy      0.9993   0.9952   0.9949   0.9945   0.9972</code></pre>
 </div>
-<div id="conclusions-and-test-data-submit" class="section level2">
-<h2>Conclusions and Test Data Submit</h2>
-<p>As can be seen from the confusion matrix this model is very accurate. I did experiment with PCA and other models, but did not get as good of accuracy. Because my test data was around 99% accurate I expected nearly all of the submitted test cases to be correct. It turned out they were all correct.</p>
-<p>Prepare the submission. (using COURSERA provided code)</p>
+<div id="conclussions-and-test-data-submit" class="section level2">
+<h2>Conclussions and Test Data Submit</h2>
+<p>The confusion matrix shows a fairly accurate model. The test data was around 99% accurate so it was expected that most of the submitted test cases were correct. In the end all of them showed to be correct.</p>
+<div id="use-the-code-the-instructors-kindly-provided-to-prepare-the-second-part-of-the-assignment" class="section level3">
+<h3>Use the code the instructors kindly provided to prepare the second part of the assignment</h3>
 <pre class="r"><code>pml_write_files = function(x){
   n = length(x)
   for(i in 1:n){
@@ -231,6 +204,7 @@ answers</code></pre>
 ##  B  A  B  A  A  E  D  B  A  A  B  C  B  A  E  E  A  B  B  B 
 ## Levels: A B C D E</code></pre>
 <pre class="r"><code>pml_write_files(answers)</code></pre>
+</div>
 </div>
 
 
