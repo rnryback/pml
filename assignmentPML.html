@@ -70,6 +70,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>The data for this project come from this source: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a>. If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment.</p>
 <p>What you should submit</p>
 <p>The goal of your project is to predict the manner in which they did the exercise. This is the “classe” variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.</p>
+<p>Reproducibility</p>
+<p>Due to security concerns with the exchange of R code, your code will not be run during the evaluation by your classmates. Please be sure that if they download the repo, they will be able to view the compiled HTML version of your analysis. <a href="https://rnryback.github.com/pml">Available here</a></p>
 </div>
 </div>
 <div id="data-processing" class="section level2">
@@ -193,34 +195,34 @@ confusionMatrix(predictions2,testing$classe)</code></pre>
 ## Prediction    A    B    C    D    E
 ##          A 1393    7    0    0    0
 ##          B    2  941    3    0    0
-##          C    0    1  851   14    1
-##          D    0    0    1  790    3
-##          E    0    0    0    0  897
+##          C    0    1  852   15    1
+##          D    0    0    0  789    2
+##          E    0    0    0    0  898
 ## 
 ## Overall Statistics
-##                                           
-##                Accuracy : 0.9935          
-##                  95% CI : (0.9908, 0.9955)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.9917          
-##  Mcnemar's Test P-Value : NA              
+##                                          
+##                Accuracy : 0.9937         
+##                  95% CI : (0.991, 0.9957)
+##     No Information Rate : 0.2845         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.992          
+##  Mcnemar's Test P-Value : NA             
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9986   0.9916   0.9953   0.9826   0.9956
-## Specificity            0.9980   0.9987   0.9960   0.9990   1.0000
-## Pos Pred Value         0.9950   0.9947   0.9815   0.9950   1.0000
-## Neg Pred Value         0.9994   0.9980   0.9990   0.9966   0.9990
+## Sensitivity            0.9986   0.9916   0.9965   0.9813   0.9967
+## Specificity            0.9980   0.9987   0.9958   0.9995   1.0000
+## Pos Pred Value         0.9950   0.9947   0.9804   0.9975   1.0000
+## Neg Pred Value         0.9994   0.9980   0.9993   0.9964   0.9993
 ## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2841   0.1919   0.1735   0.1611   0.1829
-## Detection Prevalence   0.2855   0.1929   0.1768   0.1619   0.1829
-## Balanced Accuracy      0.9983   0.9952   0.9957   0.9908   0.9978</code></pre>
+## Detection Rate         0.2841   0.1919   0.1737   0.1609   0.1831
+## Detection Prevalence   0.2855   0.1929   0.1772   0.1613   0.1831
+## Balanced Accuracy      0.9983   0.9952   0.9961   0.9904   0.9983</code></pre>
 </div>
-<div id="conclussions-and-test-data-submit" class="section level2">
-<h2>Conclussions and Test Data Submit</h2>
+<div id="conclusions-and-test-data-submit" class="section level2">
+<h2>Conclusions and Test Data Submit</h2>
 <p>The confusion matrix shows a fairly accurate model. The test data was around 99% accurate so it was expected that most of the submitted test cases were correct. In the end all of them showed to be correct.</p>
 <div id="use-the-code-the-instructors-kindly-provided-to-prepare-the-second-part-of-the-assignment" class="section level3">
 <h3>Use the code the instructors kindly provided to prepare the second part of the assignment</h3>

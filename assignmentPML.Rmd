@@ -25,6 +25,10 @@ What you should submit
 
 The goal of your project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases. 
 
+Reproducibility 
+
+Due to security concerns with the exchange of R code, your code will not be run during the evaluation by your classmates. Please be sure that if they download the repo, they will be able to view the compiled HTML version of your analysis. [Available here](https://rnryback.github.com/pml)
+
 ## Data Processing  
 
 **Performed steps**:  
@@ -71,7 +75,7 @@ testing <- model_data[-idx,]
 
 Build 5 random forests with 150 trees each using parallel processing to build this model.
 
-```{r Building the forests, cache=TRUE}
+```{r Building the forests, cache=TRUE,echo=TRUE}
 registerDoParallel()
 x <- training[-ncol(training)]
 y <- training$classe
@@ -82,7 +86,7 @@ randomForest(x, y, ntree=ntree)
 ```
 
 Provide error reports for both training and test data.  
-```{r Error reports, cache=TRUE}
+```{r Error reports, cache=TRUE,echo=TRUE}
 predictions1 <- predict(rf, newdata=training)
 confusionMatrix(predictions1,training$classe)
 
@@ -91,7 +95,7 @@ predictions2 <- predict(rf, newdata=testing)
 confusionMatrix(predictions2,testing$classe)
 ```
 
-##Conclussions and Test Data Submit
+##Conclusions and Test Data Submit
 
 The confusion matrix shows a fairly accurate model. The test data was around 99% 
 accurate so it was expected that most of the submitted test cases were correct. In the end all of them showed to be correct.
