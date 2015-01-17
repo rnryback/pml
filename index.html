@@ -1,0 +1,180 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Practical Machine Learning Assignment</title>
+  <meta name="description" content="Coursera">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Practical Machine Learning Assignment</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Coursera</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/rnryback/pml/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/rnryback/pml/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/rnryback/pml" class="code">View Practical Machine Learning Assignment on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <hr>
+
+<p>title: "Coursera´s PML Assignment"
+author: "Rnryback <a href="https://github.com/rnryback">GitHub</a>"</p>
+
+<h2>
+<a id="date-16th-january-2015" class="anchor" href="#date-16th-january-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a>date: "16th January 2015"</h2>
+
+<h2>
+<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary</h2>
+
+<p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement? a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> (see the section on the Weight Lifting Exercise Dataset).  </p>
+
+<h3>
+<a id="data" class="anchor" href="#data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data</h3>
+
+<p>The training data for this project are available here: </p>
+
+<p><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></p>
+
+<p>The test data are available here: </p>
+
+<p><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a></p>
+
+<p>The data for this project come from this source: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a>. If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment. </p>
+
+<p>What you should submit</p>
+
+<p>The goal of your project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases. </p>
+
+<p>Reproducibility </p>
+
+<p>Due to security concerns with the exchange of R code, your code will not be run during the evaluation by your classmates. Please be sure that if they download the repo, they will be able to view the compiled HTML version of your analysis. <a href="https://rnryback.github.com/pml">Or use this link</a></p>
+
+<h2>
+<a id="data-processing" class="anchor" href="#data-processing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Processing</h2>
+
+<p><strong>Performed steps</strong>:  </p>
+
+<ul>
+<li>Get the system ready loading dependencies and the data<br>
+</li>
+<li>Remove excel division error strings <code>#DIV/0!</code> and deal with <code>NA</code> values<br>
+</li>
+</ul>
+
+<div class="highlight highlight-r"><pre>library(<span class="pl-vo">Hmisc</span>)
+library(<span class="pl-vo">caret</span>)
+library(<span class="pl-vo">randomForest</span>)
+library(<span class="pl-vo">foreach</span>)
+library(<span class="pl-vo">doParallel</span>)
+set.seed(<span class="pl-c1">1980</span>)
+<span class="pl-vo">training_data</span> <span class="pl-k">&lt;-</span> read.csv(<span class="pl-s1"><span class="pl-pds">"</span>pml-training.csv<span class="pl-pds">"</span></span>, <span class="pl-v">na.strings</span><span class="pl-k">=</span>c(<span class="pl-s1"><span class="pl-pds">"</span>#DIV/0!<span class="pl-pds">"</span></span>) )
+<span class="pl-vo">evaluation_data</span> <span class="pl-k">&lt;-</span> read.csv(<span class="pl-s1"><span class="pl-pds">"</span>pml-testing.csv<span class="pl-pds">"</span></span>, <span class="pl-v">na.strings</span><span class="pl-k">=</span>c(<span class="pl-s1"><span class="pl-pds">"</span>#DIV/0!<span class="pl-pds">"</span></span>) )</pre></div>
+
+<p>Set columns from the eighth to the end to be numeric.  </p>
+
+<div class="highlight highlight-r"><pre><span class="pl-k">for</span>(<span class="pl-vo">i</span> <span class="pl-k">in</span> c(<span class="pl-c1">8</span><span class="pl-k">:</span>ncol(<span class="pl-vo">training_data</span>)<span class="pl-k">-</span><span class="pl-c1">1</span>)) {<span class="pl-vo">training_data</span>[,<span class="pl-vo">i</span>] <span class="pl-k">=</span> as.numeric(as.character(<span class="pl-vo">training_data</span>[,<span class="pl-vo">i</span>]))}
+
+<span class="pl-k">for</span>(<span class="pl-vo">i</span> <span class="pl-k">in</span> c(<span class="pl-c1">8</span><span class="pl-k">:</span>ncol(<span class="pl-vo">evaluation_data</span>)<span class="pl-k">-</span><span class="pl-c1">1</span>)) {<span class="pl-vo">evaluation_data</span>[,<span class="pl-vo">i</span>] <span class="pl-k">=</span> as.numeric(as.character(<span class="pl-vo">evaluation_data</span>[,<span class="pl-vo">i</span>]))}</pre></div>
+
+<p>There are some almost-totally blank columns in the data that do not contribute well to the prediction, so the feature dataset is made to only include complete columns.  Also removing user name, timestamps and windows.  </p>
+
+<p>Determine and display out feature set.</p>
+
+<div class="highlight highlight-r"><pre><span class="pl-vo">feature_set</span> <span class="pl-k">&lt;-</span> colnames(<span class="pl-vo">training_data</span>[colSums(is.na(<span class="pl-vo">training_data</span>)) <span class="pl-k">==</span> <span class="pl-c1">0</span>])[<span class="pl-k">-</span>(<span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">7</span>)]
+<span class="pl-vo">model_data</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">training_data</span>[<span class="pl-vo">feature_set</span>]
+<span class="pl-vo">feature_set</span></pre></div>
+
+<p>The model data is now built built from the feature set.</p>
+
+<div class="highlight highlight-r"><pre><span class="pl-vo">idx</span> <span class="pl-k">&lt;-</span> createDataPartition(<span class="pl-v">y</span><span class="pl-k">=</span><span class="pl-vo">model_data</span><span class="pl-k">$</span><span class="pl-vo">classe</span>, <span class="pl-v">p</span><span class="pl-k">=</span><span class="pl-c1">0.75</span>, <span class="pl-v">list</span><span class="pl-k">=</span><span class="pl-c1">FALSE</span> )
+<span class="pl-vo">training</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">model_data</span>[<span class="pl-vo">idx</span>,]
+<span class="pl-vo">testing</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">model_data</span>[<span class="pl-k">-</span><span class="pl-vo">idx</span>,]</pre></div>
+
+<p>Build 5 random forests with 150 trees each using parallel processing to build this model.</p>
+
+<div class="highlight highlight-r"><pre>registerDoParallel()
+<span class="pl-vo">x</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">training</span>[<span class="pl-k">-</span>ncol(<span class="pl-vo">training</span>)]
+<span class="pl-vo">y</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">training</span><span class="pl-k">$</span><span class="pl-vo">classe</span>
+
+<span class="pl-vo">rf</span> <span class="pl-k">&lt;-</span> foreach(<span class="pl-v">ntree</span><span class="pl-k">=</span>rep(<span class="pl-c1">150</span>, <span class="pl-c1">6</span>), <span class="pl-v">.combine</span><span class="pl-k">=</span><span class="pl-e">randomForest</span><span class="pl-k">::</span><span class="pl-vo">combine</span>, <span class="pl-v">.packages</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>randomForest<span class="pl-pds">'</span></span>) %<span class="pl-vo">dopar</span>% {
+randomForest(<span class="pl-vo">x</span>, <span class="pl-vo">y</span>, <span class="pl-v">ntree</span><span class="pl-k">=</span><span class="pl-vo">ntree</span>) 
+}</pre></div>
+
+<p>Provide error reports for both training and test data.  </p>
+
+<div class="highlight highlight-r"><pre><span class="pl-vo">predictions1</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-vo">rf</span>, <span class="pl-v">newdata</span><span class="pl-k">=</span><span class="pl-vo">training</span>)
+confusionMatrix(<span class="pl-vo">predictions1</span>,<span class="pl-vo">training</span><span class="pl-k">$</span><span class="pl-vo">classe</span>)
+
+
+<span class="pl-vo">predictions2</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-vo">rf</span>, <span class="pl-v">newdata</span><span class="pl-k">=</span><span class="pl-vo">testing</span>)
+confusionMatrix(<span class="pl-vo">predictions2</span>,<span class="pl-vo">testing</span><span class="pl-k">$</span><span class="pl-vo">classe</span>)</pre></div>
+
+<h2>
+<a id="conclusions-and-test-data-submit" class="anchor" href="#conclusions-and-test-data-submit" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions and Test Data Submit</h2>
+
+<p>The confusion matrix shows a fairly accurate model. The test data was around 99% 
+accurate so it was expected that most of the submitted test cases were correct. In the end all of them showed to be correct.</p>
+
+<h3>
+<a id="use-the-code-the-instructors-kindly-provided-to-prepare-the-second-part-of-the-assignment" class="anchor" href="#use-the-code-the-instructors-kindly-provided-to-prepare-the-second-part-of-the-assignment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use the code the instructors kindly provided to prepare the second part of the assignment</h3>
+
+<div class="highlight highlight-r"><pre><span class="pl-v">pml_write_files</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-vo">x</span>){
+  <span class="pl-v">n</span> <span class="pl-k">=</span> length(<span class="pl-vo">x</span>)
+  <span class="pl-k">for</span>(<span class="pl-vo">i</span> <span class="pl-k">in</span> <span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-vo">n</span>){
+    <span class="pl-v">filename</span> <span class="pl-k">=</span> paste0(<span class="pl-s1"><span class="pl-pds">"</span>problem_id_<span class="pl-pds">"</span></span>,<span class="pl-vo">i</span>,<span class="pl-s1"><span class="pl-pds">"</span>.txt<span class="pl-pds">"</span></span>)
+    write.table(<span class="pl-vo">x</span>[<span class="pl-vo">i</span>],<span class="pl-v">file</span><span class="pl-k">=</span><span class="pl-vo">filename</span>,<span class="pl-v">quote</span><span class="pl-k">=</span><span class="pl-c1">FALSE</span>,<span class="pl-v">row.names</span><span class="pl-k">=</span><span class="pl-c1">FALSE</span>,<span class="pl-v">col.names</span><span class="pl-k">=</span><span class="pl-c1">FALSE</span>)
+  }
+}
+
+
+<span class="pl-vo">x</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">evaluation_data</span>
+<span class="pl-vo">x</span> <span class="pl-k">&lt;-</span> <span class="pl-vo">x</span>[<span class="pl-vo">feature_set</span>[<span class="pl-vo">feature_set</span><span class="pl-k">!=</span><span class="pl-s1"><span class="pl-pds">'</span>classe<span class="pl-pds">'</span></span>]]
+<span class="pl-vo">answers</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-vo">rf</span>, <span class="pl-v">newdata</span><span class="pl-k">=</span><span class="pl-vo">x</span>)
+
+<span class="pl-vo">answers</span>
+
+pml_write_files(<span class="pl-vo">answers</span>)</pre></div>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/rnryback" class="avatar"><img src="https://avatars3.githubusercontent.com/u/9655073?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/rnryback">rnryback</a> maintains <a href="https://github.com/rnryback/pml">Practical Machine Learning Assignment</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/rnryback/pml/tarball/master" class="tar">tar</a><a href="https://github.com/rnryback/pml/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
