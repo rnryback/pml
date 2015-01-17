@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
-<meta name="author" content="Rnryback" />
+<meta name="author" content="Rnryback GitHub" />
 
 
 <title>Coursera´s PML Assignment</title>
@@ -53,7 +53,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="header">
 <h1 class="title">Coursera´s PML Assignment</h1>
-<h4 class="author"><em>Rnryback</em></h4>
+<h4 class="author"><em>Rnryback <a href="https://github.com/rnryback">GitHub</a></em></h4>
 <h4 class="date"><em>16th January 2015</em></h4>
 </div>
 
@@ -61,7 +61,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="summary" class="section level2">
 <h2>Summary</h2>
 <p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement? a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> (see the section on the Weight Lifting Exercise Dataset).</p>
-<p>Data</p>
+<div id="data" class="section level3">
+<h3>Data</h3>
 <p>The training data for this project are available here:</p>
 <p><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></p>
 <p>The test data are available here:</p>
@@ -70,9 +71,10 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>What you should submit</p>
 <p>The goal of your project is to predict the manner in which they did the exercise. This is the “classe” variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.</p>
 </div>
+</div>
 <div id="data-processing" class="section level2">
 <h2>Data Processing</h2>
-<p><strong>Performed steps</strong>:<br />* Get the system ready loading dependencies and the data<br />* Remove excel division error strings <code>#DIV/0!</code> and replace with <code>NA</code> values<br />* Convert empty strings to <code>NA</code> values</p>
+<p><strong>Performed steps</strong>:<br />* Get the system ready loading dependencies and the data<br />* Remove excel division error strings <code>#DIV/0!</code> and deal with <code>NA</code> values</p>
 <pre class="r"><code>library(Hmisc)</code></pre>
 <pre><code>## Loading required package: grid
 ## Loading required package: lattice
@@ -190,32 +192,32 @@ confusionMatrix(predictions2,testing$classe)</code></pre>
 ##           Reference
 ## Prediction    A    B    C    D    E
 ##          A 1393    7    0    0    0
-##          B    2  941    2    0    0
-##          C    0    1  852   14    1
-##          D    0    0    1  790    2
-##          E    0    0    0    0  898
+##          B    2  941    3    0    0
+##          C    0    1  851   14    1
+##          D    0    0    1  790    3
+##          E    0    0    0    0  897
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.9939          
-##                  95% CI : (0.9913, 0.9959)
+##                Accuracy : 0.9935          
+##                  95% CI : (0.9908, 0.9955)
 ##     No Information Rate : 0.2845          
 ##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
 ##                                           
-##                   Kappa : 0.9923          
+##                   Kappa : 0.9917          
 ##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9986   0.9916   0.9965   0.9826   0.9967
-## Specificity            0.9980   0.9990   0.9960   0.9993   1.0000
-## Pos Pred Value         0.9950   0.9958   0.9816   0.9962   1.0000
-## Neg Pred Value         0.9994   0.9980   0.9993   0.9966   0.9993
+## Sensitivity            0.9986   0.9916   0.9953   0.9826   0.9956
+## Specificity            0.9980   0.9987   0.9960   0.9990   1.0000
+## Pos Pred Value         0.9950   0.9947   0.9815   0.9950   1.0000
+## Neg Pred Value         0.9994   0.9980   0.9990   0.9966   0.9990
 ## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2841   0.1919   0.1737   0.1611   0.1831
-## Detection Prevalence   0.2855   0.1927   0.1770   0.1617   0.1831
-## Balanced Accuracy      0.9983   0.9953   0.9963   0.9909   0.9983</code></pre>
+## Detection Rate         0.2841   0.1919   0.1735   0.1611   0.1829
+## Detection Prevalence   0.2855   0.1929   0.1768   0.1619   0.1829
+## Balanced Accuracy      0.9983   0.9952   0.9957   0.9908   0.9978</code></pre>
 </div>
 <div id="conclussions-and-test-data-submit" class="section level2">
 <h2>Conclussions and Test Data Submit</h2>

@@ -1,6 +1,6 @@
 ---
 title: "Coursera´s PML Assignment"
-author: "Rnryback"
+author: "Rnryback [GitHub](https://github.com/rnryback)"
 date: "16th January 2015"
 output: html_document
 ---
